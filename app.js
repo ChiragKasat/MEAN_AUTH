@@ -27,6 +27,8 @@ app.use(function (err, req, res, next) {
 	next();
 });
 
+app.get('/', (req, res) => res.send('hello world'))
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, async () => {
 	console.log(`Server running on port ${PORT}!`);

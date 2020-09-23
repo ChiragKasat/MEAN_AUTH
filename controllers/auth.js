@@ -19,6 +19,16 @@ exports.register = async (req, res) => {
 
 	const user = new User({ ...req.body, password: hash });
 	user.save((err, user) => {
+		const token = jwt.sign(
+			{
+				id: user._id,
+				email: user.email
+			},
+			process.env.JWTSECRET,
+			{
+				expiresIn: '7d'
+			}
+		);
 		if (err) {
 			return res.status(400).json({
 				success: false,
@@ -28,8 +38,7 @@ exports.register = async (req, res) => {
 		}
 		res.json({
 			success: true,
-			email: user.email,
-			id: user._id
+			token
 		});
 	});
 };

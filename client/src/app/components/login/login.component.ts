@@ -20,7 +20,6 @@ export class LoginComponent {
 
   login() {
     this.auth.login(this.credentials).subscribe((data: any) => {
-      console.log(data);
       if (data.success) {
         this.auth.saveToken(data.token);
         this.router.navigateByUrl('dashboard');

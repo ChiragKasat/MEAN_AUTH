@@ -1,8 +1,16 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
+const nodemailer = require('nodemailer');
 
 const saltRounds = 10;
+const transporter = nodemailer.createTransport({
+  service: 'Gmail',
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  },
+});
 
 exports.register = async (req, res) => {
 	const alreadyExists = await User.findOne({ email: req.body.email });
@@ -41,6 +49,25 @@ exports.register = async (req, res) => {
 			token
 		});
 	});
+	jwt.sign(
+		{
+			id: user._id
+		},
+		process.env.EMAIL_SECRET,
+		{
+			expiresIn: '1d',
+		},
+		(err, emailToken) => {
+			const port = process.env.PORT||3000;
+			const url = `http://localhost:${port}/confirmation/${emailToken}`;
+
+			transporter.sendMail({
+				to: user.email,
+				subject: 'Confirm Email',
+				html: `Please click this email to confirm your email: <a href="${url}">${url}</a>`,
+			});
+		},
+	);
 };
 
 exports.login = async (req, res) => {
@@ -68,7 +95,7 @@ exports.login = async (req, res) => {
 			},
 			process.env.JWTSECRET,
 			{
-				expiresIn: '7d'
+				expiresIn: '1d'
 			}
 		);
 

@@ -74,7 +74,7 @@ export class AuthenticationService {
   }
 
   public dashboard(): Observable<any> {
-    const resp = this.http.get(`http://localhost:3000/api/dash`, {
+    const resp = this.http.get(`http://localhost:3000/api/dashboard`, {
       headers: { Authorization: `Bearer ${this.getToken()}` },
     });
     return resp;

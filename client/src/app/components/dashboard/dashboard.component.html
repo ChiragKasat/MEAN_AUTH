@@ -1,1 +1,4 @@
-<p>dashboard works!</p>
+<div class="container mt-4" style="text-align: center;">
+	<p *ngIf="!data.validated">Email is not validated. Please check your email.</p>
+	<h1 *ngIf="data.validated">Hello {{data.email}}</h1>
+</div>
